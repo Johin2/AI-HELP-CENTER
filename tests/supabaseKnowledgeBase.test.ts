@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { SupabaseClient } from '@supabase/supabase-js';
 
-import { SupabaseKnowledgeBase } from '../src/retrieval/knowledgeBase.js';
+import { SupabaseKnowledgeBase } from '@/lib/retrieval/knowledgeBase';
 
 const createClientStub = () => {
   const select = vi.fn();

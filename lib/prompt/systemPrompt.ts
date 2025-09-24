@@ -170,7 +170,7 @@ const answer = await ai.models.generateContent({
 [1] Prompt design strategies – Gemini API. ([Google AI for Developers][1])
 [2] Structured output / responseSchema – Gemini API & Firebase guide. ([Google AI for Developers][5])
 [3] Safety settings – Gemini API. ([Google AI for Developers][3])
-[4] Adding citations in RAG – LangChain how-to; overviews on why citations matter. ([LangChain][2])
+[4] RLS for multi-tenant SaaS – Supabase docs & overviews. ([Supabase][4])
 [5] RLS for multi-tenant SaaS – Supabase docs & overviews. ([Supabase][4])
 
 ---

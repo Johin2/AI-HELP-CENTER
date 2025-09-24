@@ -1,16 +1,9 @@
-import express from 'express';
+import { AppConfig } from '@/lib/config';
+import { GeminiClient } from '@/lib/gemini/client';
+import { loadKnowledgeBase, SupabaseKnowledgeBase } from '@/lib/retrieval/knowledgeBase';
+import { createRetriever } from '@/lib/retrieval/retriever';
 
-import { AppConfig } from './config.js';
-import { GeminiClient } from './gemini/client.js';
-import { loadKnowledgeBase, SupabaseKnowledgeBase } from './retrieval/knowledgeBase.js';
-import { createRetriever } from './retrieval/retriever.js';
-import { createAskRouter } from './routes/ask.js';
-import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
-
-const app = express();
-app.use(express.json());
-
-const retriever = createRetriever([]);
+export const retriever = createRetriever([]);
 
 const initializeKnowledgeBase = async () => {
   if (AppConfig.supabase.url && AppConfig.supabase.key) {
@@ -26,14 +19,14 @@ const initializeKnowledgeBase = async () => {
       if (documents.length > 0) {
         retriever.updateDocuments(documents);
         console.log(`Loaded ${documents.length} knowledge base documents from Supabase.`);
-      } else {
-        console.warn('Supabase knowledge base returned no documents. Retrieval will rely on user-provided context.');
+        return;
       }
+
+      console.warn('Supabase knowledge base returned no documents. Retrieval will rely on user-provided context.');
+      return;
     } catch (error) {
       console.error('Unable to initialize Supabase knowledge base:', error);
     }
-
-    return;
   }
 
   const fallbackDocuments = loadKnowledgeBase(AppConfig.knowledgeBasePath);
@@ -55,14 +48,3 @@ export const geminiClient = new GeminiClient({
   model: AppConfig.gemini.model,
   baseUrl: AppConfig.gemini.baseUrl,
 });
-
-app.get('/health', (_req, res) => {
-  res.json({ status: 'ok' });
-});
-
-app.use('/api', createAskRouter(geminiClient, retriever));
-
-app.use(notFoundHandler);
-app.use(errorHandler);
-
-export default app;

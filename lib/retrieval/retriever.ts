@@ -1,4 +1,4 @@
-import type { RetrievedDoc } from '../types.js';
+import type { RetrievedDoc } from '@/lib/types';
 
 const TITLE_WEIGHT = 2;
 const TEXT_WEIGHT = 1;
@@ -46,5 +46,4 @@ export class SimpleRetriever {
   }
 }
 
-export const createRetriever = (documents: RetrievedDoc[]): SimpleRetriever =>
-  new SimpleRetriever(documents);
+export const createRetriever = (documents: RetrievedDoc[]): SimpleRetriever => new SimpleRetriever(documents);
