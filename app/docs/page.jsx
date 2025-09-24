@@ -1,5 +1,3 @@
-import Link from 'next/link';
-
 import { DocsSection } from '@/components/docs-section';
 
 export const metadata = {
@@ -9,20 +7,21 @@ export const metadata = {
 
 export default function DocsPage() {
   return (
-    <main className="relative mx-auto min-h-screen max-w-7xl px-6 py-16">
+    <main className="relative mx-auto min-h-screen max-w-5xl px-6 pb-20 pt-24">
       <div className="pointer-events-none absolute inset-x-0 -top-32 -z-10 flex justify-center">
         <div className="h-64 w-full max-w-5xl rounded-full bg-brand/30 blur-3xl" />
       </div>
 
-      <div className="flex items-center justify-between">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 rounded-full border border-slate-800/80 bg-slate-950/60 px-4 py-2 text-sm font-medium text-slate-300 shadow-2xl shadow-black/30 transition hover:border-brand hover:text-white"
-        >
-          <span aria-hidden>←</span>
-          Back to home
-        </Link>
-      </div>
+      <header className="space-y-4 text-center sm:text-left">
+        <span className="inline-flex rounded-full border border-brand/50 bg-brand/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-brand">
+          Documentation
+        </span>
+        <h1 className="text-4xl font-semibold leading-tight text-white sm:text-5xl">All of the answers, in one place.</h1>
+        <p className="text-base text-slate-300 sm:text-lg">
+          Explore configuration steps, SDK usage, and integration tips without leaving the page. Everything you need to ship the
+          AI Help Center lives below.
+        </p>
+      </header>
 
       <div className="mt-12">
         <DocsSection />
