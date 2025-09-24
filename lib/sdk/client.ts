@@ -24,7 +24,9 @@ export class AiHelpCenterClient {
   private readonly defaultHeaders: Record<string, string>;
 
   constructor(config: AiHelpCenterClientConfig) {
-    if (!config.baseUrl) {
+    const trimmedBaseUrl = config.baseUrl?.trim();
+
+    if (!trimmedBaseUrl) {
       throw new Error('baseUrl is required to initialize the AI Help Center client.');
     }
 
@@ -32,8 +34,7 @@ export class AiHelpCenterClient {
     if (!fetchImpl) {
       throw new Error('Fetch API is not available in this environment. Provide a fetch implementation.');
     }
-
-    this.baseUrl = config.baseUrl.replace(/\/+$/, '');
+    this.baseUrl = trimmedBaseUrl.replace(/\/+$/, '');
     this.askPath = config.askPath ?? '/api/ask';
     this.datasetPath = config.datasetPath ?? '/api/datasets';
     this.fetchImpl = fetchImpl;
@@ -67,14 +68,21 @@ export class AiHelpCenterClient {
   }
 
   private async postJson(path: string, body: unknown, errorContext: string) {
-    const response = await this.fetchImpl(this.buildUrl(path), {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...this.defaultHeaders,
-      },
-      body: JSON.stringify(body),
-    });
+    let response: Response;
+
+    try {
+      response = await this.fetchImpl(this.buildUrl(path), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...this.defaultHeaders,
+        },
+        body: JSON.stringify(body),
+      });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      throw new Error(`${errorContext}: ${message}`);
+    }
 
     if (!response.ok) {
       let errorDetail: string;
@@ -87,7 +95,12 @@ export class AiHelpCenterClient {
       throw new Error(`${errorContext} (status ${response.status}): ${errorDetail}`);
     }
 
-    return response.json();
+    try {
+      return await response.json();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      throw new Error(`${errorContext}: Failed to parse JSON response: ${message}`);
+    }
   }
 
   private buildUrl(path: string): string {
