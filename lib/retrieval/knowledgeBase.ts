@@ -4,7 +4,7 @@ import { resolve } from 'node:path';
 import { createClient } from '@supabase/supabase-js';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
-import type { RetrievedDoc } from '../types.js';
+import type { RetrievedDoc } from '@/lib/types';
 
 export interface SupabaseKnowledgeBaseConfig {
   url: string;
@@ -45,9 +45,7 @@ export class SupabaseKnowledgeBase {
 
   public async fetchDocuments(): Promise<RetrievedDoc[]> {
     try {
-      const { data, error } = await this.client
-        .from(this.table)
-        .select('id, title, text, url, created_at');
+      const { data, error } = await this.client.from(this.table).select('id, title, text, url, created_at');
 
       if (error) {
         console.error('Failed to query Supabase knowledge base:', error);

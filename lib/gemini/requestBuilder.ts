@@ -1,5 +1,5 @@
-import { SYSTEM_PROMPT } from '../prompt/systemPrompt.js';
-import type { GeminiGenerateRequest, GeminiRequestOptions, GeminiResponseSchema } from '../types.js';
+import { SYSTEM_PROMPT } from '@/lib/prompt/systemPrompt';
+import type { GeminiGenerateRequest, GeminiRequestOptions, GeminiResponseSchema } from '@/lib/types';
 
 export const JSON_MODE_SCHEMA: GeminiResponseSchema = {
   type: 'object',

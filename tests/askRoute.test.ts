@@ -1,21 +1,26 @@
-import request from 'supertest';
-import { beforeAll, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
-import app, { knowledgeReady } from '../src/index.js';
+import { GeminiClient } from '@/lib/gemini/client';
+import { handleAskRequest } from '@/lib/server/ask';
+import { SimpleRetriever } from '@/lib/retrieval/retriever';
+import { ZodError } from 'zod';
 
-beforeAll(async () => {
-  await knowledgeReady;
-});
-
-describe('POST /api/ask', () => {
+describe('handleAskRequest', () => {
   it('returns the request payload when the API key is missing', async () => {
-    const response = await request(app)
-      .post('/api/ask')
-      .send({ question: 'How do I configure the system?' })
-      .expect(200);
+    const retriever = new SimpleRetriever([]);
+    const client = new GeminiClient();
 
-    expect(response.body.message).toMatch(/not configured/i);
-    expect(response.body.request).toBeDefined();
-    expect(response.body.request.contents).toHaveLength(3);
+    const result = await handleAskRequest({ question: 'How do I configure the system?' }, { client, retriever });
+
+    expect(result.status).toBe(200);
+    expect(result.body.message).toMatch(/not configured/i);
+    expect(result.body.request).toBeDefined();
+  });
+
+  it('throws a validation error when the payload is invalid', async () => {
+    const retriever = new SimpleRetriever([]);
+    const client = new GeminiClient();
+
+    await expect(handleAskRequest({ question: '' }, { client, retriever })).rejects.toBeInstanceOf(ZodError);
   });
 });

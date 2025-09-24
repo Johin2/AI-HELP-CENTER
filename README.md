@@ -1,15 +1,16 @@
-# AI Help-Center
+# AI Help Center (Next.js Edition)
 
-The AI Help-Center is a production-ready Node.js service that wraps Google Gemini with retrieval-augmented generation (RAG) and enforceable citation rules. It exposes a simple HTTP API that accepts end-user questions, retrieves relevant knowledge base passages, and builds a Gemini request powered by the provided system prompt.
+A production-ready AI Help Center rebuilt with **Next.js 14**, **Tailwind CSS**, and a typed integration with Google Gemini. The app unifies a modern UI, a retrieval-augmented generation (RAG) pipeline, and Supabase-backed knowledge base ingestion so you can ship a reliable support copilot in minutes.
 
-## Features
+## Highlights
 
-- 📚 Lightweight keyword retriever backed by a Supabase-hosted knowledge base.
-- 🤖 Gemini integration that outputs either Markdown or JSON responses using the provided RAG-centric system prompt.
-- 🔐 Safety-aware defaults with optional safety settings and schema-constrained JSON mode.
-- 🧪 Comprehensive test coverage for request building, retrieval, and the public API route.
+- ⚡️ **Next.js App Router** front-end with a type-safe API route – no more manual Express wiring.
+- 🎨 **Tailwind CSS** design system with dark mode styling, interactive forms, and responsive layout.
+- 📚 **Retrieval pipeline** reusing the SimpleRetriever and Supabase loader from the original service, exposed through a shared handler used by tests and API routes.
+- 🤖 **Gemini client** capable of producing Markdown or schema-constrained JSON responses with the existing production system prompt.
+- 🧪 **Vitest suite** covering request construction, retrieval ranking, Supabase normalization, and the ask handler behaviour.
 
-## Getting started
+## Getting Started
 
 1. **Install dependencies**
 
@@ -17,27 +18,21 @@ The AI Help-Center is a production-ready Node.js service that wraps Google Gemin
    npm install
    ```
 
-2. **Configure environment**
+2. **Configure environment variables**
 
-   Copy `.env.example` (or set variables directly):
+   Create a `.env.local` file (Next.js automatically loads it) or export variables directly:
 
-   ```bash
-   cp .env.example .env
+   ```env
+   GEMINI_API_KEY=your-api-key
+   GEMINI_MODEL=gemini-2.0-flash-001
+   SUPABASE_URL=https://your-project.supabase.co
+   SUPABASE_SERVICE_ROLE_KEY=service-role-or-anon-key
+   SUPABASE_KB_TABLE=knowledge_base
+   KB_PATH=data/knowledgeBase.json
    ```
 
-   Required variables:
-
-   - `SUPABASE_URL` – Your Supabase project URL.
-   - `SUPABASE_SERVICE_ROLE_KEY` (or `SUPABASE_ANON_KEY`) – Key used to read the knowledge base table.
-
-   Optional variables:
-
-   - `PORT` – Server port (default: `3000`).
-   - `GEMINI_API_KEY` – Required when you want to proxy requests to Gemini.
-   - `GEMINI_MODEL` – Gemini model name (default: `gemini-2.0-flash-001`).
-   - `GEMINI_BASE_URL` – Gemini API base URL (default: official REST endpoint).
-   - `SUPABASE_KB_TABLE` – Supabase table that stores knowledge base entries (default: `knowledge_base`).
-   - `KB_PATH` – Path to a local JSON fallback if Supabase is not configured (default: `data/knowledgeBase.json`).
+   - When `GEMINI_API_KEY` is omitted, the API returns the Gemini request payload so you can inspect prompts safely in development.
+   - When Supabase credentials are missing, the retriever falls back to the bundled JSON knowledge base.
 
 3. **Run the development server**
 
@@ -45,7 +40,7 @@ The AI Help-Center is a production-ready Node.js service that wraps Google Gemin
    npm run dev
    ```
 
-   Without a configured `GEMINI_API_KEY`, the `/api/ask` endpoint returns the request payload for inspection, making local development safe and deterministic.
+   Visit [http://localhost:3000](http://localhost:3000) to interact with the Tailwind UI, submit questions, and preview raw responses from `/api/ask`.
 
 4. **Build for production**
 
@@ -54,38 +49,51 @@ The AI Help-Center is a production-ready Node.js service that wraps Google Gemin
    npm start
    ```
 
-5. **Deploy to Vercel**
-
-   The repository ships with a ready-to-use [`vercel.json`](./vercel.json) configuration and a catch-all serverless function in [`api/[[...path]].mjs`](./api/[[...path]].mjs). To deploy:
+5. **Run tests**
 
    ```bash
-   npm install -g vercel
-   vercel login
-   vercel link
-   vercel env pull            # optional: sync local .env
-   vercel env add NAME VALUE  # add required env vars
-   vercel deploy --prod
+   npm test
    ```
 
-   The build step compiles the TypeScript sources (`npm run build`) before bundling the serverless handler. All `/api/*` requests are routed through the Express app, so the same endpoints work locally and on Vercel.
+## Project Structure
 
-## API
+```
+app/
+  api/ask/route.ts       → Next.js API route backed by the shared ask handler
+  layout.tsx             → Root layout with global styles
+  page.tsx               → Landing page with the interactive Ask form
+components/
+  ask-form.tsx           → Client component that calls the API and renders JSON responses
+lib/
+  config.ts              → Loads environment-driven configuration
+  gemini/                → Gemini client + request builder
+  prompt/                → Production system prompt
+  retrieval/             → SimpleRetriever and Supabase knowledge base loader
+  server/ask.ts          → Zod-validated ask handler used by the API and tests
+  server/runtime.ts      → Bootstraps retriever + Gemini client at module scope
+```
+
+## API Endpoint
 
 ### `POST /api/ask`
 
-Generate an answer for an end-user question. The server automatically retrieves the top knowledge base passages if none are supplied.
+Generate an answer for a user question.
 
-**Request body**
+- Automatically runs lightweight keyword retrieval (top 3 matches) when `retrieved_docs` are not provided.
+- Accepts an optional workspace descriptor, policy blob, and response mode (`markdown` or `json`).
+- Returns either the Gemini generation response or a request preview when the API key is missing.
+
+**Example request**
 
 ```json
 {
   "question": "How do I configure the system?",
-  "mode": "markdown",
-  "workspace": { "name": "Acme" }
+  "workspace": { "name": "Acme Support" },
+  "mode": "markdown"
 }
 ```
 
-**Response (without API key)**
+**Example response (no API key configured)**
 
 ```json
 {
@@ -101,48 +109,13 @@ Generate an answer for an end-user question. The server automatically retrieves 
 }
 ```
 
-When a `GEMINI_API_KEY` is supplied, the endpoint forwards the request to Gemini and returns the model response.
+## Deployment
 
-## Knowledge base
-
-Knowledge base entries are stored in Supabase. Create a table (default name: `knowledge_base`) with at least the following columns:
-
-| Column       | Type      | Notes                                     |
-| ------------ | --------- | ----------------------------------------- |
-| `id`         | `uuid`    | Primary key, returned as a string.        |
-| `title`      | `text`    | Required. Used in retrieval scoring.      |
-| `text`       | `text`    | Required. Full passage content.           |
-| `url`        | `text`    | Required. Used for citations.             |
-| `created_at` | `timestamptz` | Optional. Helps resolve conflicting docs. |
-
-Additional metadata columns are preserved and passed through to Gemini. Populate the table with your organization’s documents to power retrieval.
-
-If Supabase credentials are not provided, the service falls back to loading documents from `data/knowledgeBase.json`, making local development possible without a database. The simple keyword-based retriever can be replaced with an embedding-based implementation without changing the API surface.
-
-## Testing
-
-Run the automated test suite with:
+The repository includes a minimal [`vercel.json`](./vercel.json). Deploy with Vercel or any Next.js-compatible platform:
 
 ```bash
-npm test
+npm install -g vercel
+vercel deploy --prod
 ```
 
-Tests cover the Gemini request builder, retriever ranking, and the `/api/ask` HTTP handler.
-
-## Project structure
-
-```
-src/
-├── config.ts              # Environment & configuration helpers
-├── gemini/                # Request builder and API client
-├── prompt/                # System prompt used for all conversations
-├── retrieval/             # Lightweight knowledge base loader and retriever
-├── routes/                # Express routers
-├── middleware/            # Error handling utilities
-├── index.ts               # Express app factory exported for tests & serverless
-└── server.ts              # Node.js runtime entrypoint for local/VM hosting
-```
-
-## License
-
-This project is provided as-is for demonstration purposes. Adapt and secure it to match your production requirements.
+Set the same environment variables in your hosting provider to enable Supabase retrieval and Gemini generation in production.

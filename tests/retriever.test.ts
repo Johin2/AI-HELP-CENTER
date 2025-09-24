@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { SimpleRetriever } from '../src/retrieval/retriever.js';
-import type { RetrievedDoc } from '../src/types.js';
+import { SimpleRetriever } from '@/lib/retrieval/retriever';
+import type { RetrievedDoc } from '@/lib/types';
 
 const docs: RetrievedDoc[] = [
   {
