@@ -1,0 +1,23 @@
+[
+  {
+    "id": "kb-001",
+    "title": "Getting started with the Help-Center AI",
+    "url": "https://example.com/help-center/getting-started",
+    "text": "To get started, connect your workspace, upload your knowledge base documents, and configure tone preferences under Workspace Settings.",
+    "created_at": "2024-01-15"
+  },
+  {
+    "id": "kb-002",
+    "title": "Configuring Gemini access",
+    "url": "https://example.com/help-center/configure-gemini",
+    "text": "Set the GEMINI_API_KEY environment variable and optionally override GEMINI_MODEL. Enable JSON mode in askGemini by setting mode to 'json'.",
+    "created_at": "2024-02-02"
+  },
+  {
+    "id": "kb-003",
+    "title": "Citations and compliance",
+    "url": "https://example.com/help-center/citations",
+    "text": "Every answer must include inline numeric citations for all claims and a Sources section that maps numbers to document URLs.",
+    "created_at": "2024-03-05"
+  }
+]
