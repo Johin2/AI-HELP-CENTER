@@ -50,7 +50,7 @@ export const knowledgeReady = initializeKnowledgeBase().catch((error) => {
   console.error('Knowledge base initialization failed:', error);
 });
 
-const geminiClient = new GeminiClient({
+export const geminiClient = new GeminiClient({
   apiKey: AppConfig.gemini.apiKey,
   model: AppConfig.gemini.model,
   baseUrl: AppConfig.gemini.baseUrl,
@@ -64,20 +64,5 @@ app.use('/api', createAskRouter(geminiClient, retriever));
 
 app.use(notFoundHandler);
 app.use(errorHandler);
-
-if (process.env.NODE_ENV !== 'test') {
-  knowledgeReady
-    .catch(() => {
-      // initialization errors are already logged above
-    })
-    .finally(() => {
-      app.listen(AppConfig.port, () => {
-        console.log(`AI Help-Center server running on port ${AppConfig.port}`);
-        if (!geminiClient.isConfigured()) {
-          console.warn('Gemini API key not configured. The /api/ask endpoint will return request payloads only.');
-        }
-      });
-    });
-}
 
 export default app;

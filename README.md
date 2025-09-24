@@ -54,6 +54,21 @@ The AI Help-Center is a production-ready Node.js service that wraps Google Gemin
    npm start
    ```
 
+5. **Deploy to Vercel**
+
+   The repository ships with a ready-to-use [`vercel.json`](./vercel.json) configuration and a catch-all serverless function in [`api/[[...path]].mjs`](./api/[[...path]].mjs). To deploy:
+
+   ```bash
+   npm install -g vercel
+   vercel login
+   vercel link
+   vercel env pull            # optional: sync local .env
+   vercel env add NAME VALUE  # add required env vars
+   vercel deploy --prod
+   ```
+
+   The build step compiles the TypeScript sources (`npm run build`) before bundling the serverless handler. All `/api/*` requests are routed through the Express app, so the same endpoints work locally and on Vercel.
+
 ## API
 
 ### `POST /api/ask`
@@ -124,7 +139,8 @@ src/
 ├── retrieval/             # Lightweight knowledge base loader and retriever
 ├── routes/                # Express routers
 ├── middleware/            # Error handling utilities
-└── index.ts               # Express server entrypoint
+├── index.ts               # Express app factory exported for tests & serverless
+└── server.ts              # Node.js runtime entrypoint for local/VM hosting
 ```
 
 ## License

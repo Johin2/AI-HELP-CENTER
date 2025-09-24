@@ -13,10 +13,19 @@ const retrievedDocSchema = z.object({
   created_at: z.string().optional(),
 });
 
+const workspaceSchema = z
+  .object({
+    name: z.string(),
+    brand: z.string().optional(),
+    tone: z.string().optional(),
+    locale: z.string().optional(),
+  })
+  .catchall(z.unknown());
+
 const askSchema = z.object({
   question: z.string().min(1),
-  workspace: z.record(z.any()).optional(),
-  policies: z.record(z.any()).optional(),
+  workspace: workspaceSchema.optional(),
+  policies: z.record(z.unknown()).optional(),
   retrieved_docs: z.array(retrievedDocSchema).optional(),
   mode: z.enum(['markdown', 'json']).optional(),
 });
