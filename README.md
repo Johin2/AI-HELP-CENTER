@@ -27,15 +27,12 @@ A production-ready AI Help Center rebuilt with **Next.js 14**, **Tailwind CSS**,
    GEMINI_MODEL=gemini-2.0-flash-001
    SUPABASE_URL=https://your-project.supabase.co
    SUPABASE_SERVICE_ROLE_KEY=service-role-or-anon-key
+   NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
    SUPABASE_KB_TABLE=knowledge_base
    SUPABASE_REPO_CHUNKS_TABLE=repo_code_chunks
    SUPABASE_REPOSITORIES_TABLE=repository_indexes
    KB_PATH=data/knowledgeBase.json
-   NEXTAUTH_SECRET=complex-random-string
-   GOOGLE_CLIENT_ID=your-google-oauth-client-id
-   GOOGLE_CLIENT_SECRET=your-google-oauth-client-secret
-   GITHUB_CLIENT_ID=your-github-oauth-client-id
-   GITHUB_CLIENT_SECRET=your-github-oauth-client-secret
    GITHUB_APP_ID=your-github-app-id
    GITHUB_APP_CLIENT_ID=your-github-app-oauth-client-id
    GITHUB_APP_CLIENT_SECRET=your-github-app-oauth-client-secret
@@ -52,6 +49,16 @@ A production-ready AI Help Center rebuilt with **Next.js 14**, **Tailwind CSS**,
    - When `GEMINI_API_KEY` is omitted, the API returns the Gemini request payload so you can inspect prompts safely in development.
    - When Supabase credentials are missing, the retriever falls back to the bundled JSON knowledge base.
    - If you enable Supabase, ensure the knowledge base and repository tables exist. Run this SQL in the SQL editor (adjust the schema/name as needed):
+
+### Configure Supabase authentication
+
+The UI relies on Supabase Auth for Google sign-in and session management. Ensure you:
+
+1. Enable **Google** under **Authentication → Providers** in the Supabase dashboard and paste the OAuth client credentials you created in Google Cloud (the redirect URL should match the Supabase callback URL you already configured).
+2. Copy your project URL and anon/public API key into `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
+3. Provide the service role key in `SUPABASE_SERVICE_ROLE_KEY` so server utilities can manage the knowledge base and repository indexes.
+
+The browser client persists sessions automatically, so returning users stay signed in until they explicitly sign out from the navigation bar.
 
      ```sql
      create table if not exists public.knowledge_base (
