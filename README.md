@@ -151,11 +151,11 @@ Upload or replace knowledge base documents so the retriever stays up to date.
 
 The project ships with:
 
-- A lightweight TypeScript SDK so you can integrate the Help Center from any front-end or server without manually crafting HTTP requests.
+- A lightweight TypeScript SDK so you can integrate the Help Center from any front-end or server without manually crafting HTTP requests. Install it globally with `npm install ai-help-center-sdk` or generate a local build using `npm run build:sdk`.
 - A Python package named [`aichat`](./docs/aichat-python.md) that mirrors the TypeScript surface area for backend jobs, data pipelines, and notebook experiments.
 
 ```ts
-import { AiHelpCenterClient } from '@/lib/sdk';
+import { AiHelpCenterClient } from 'ai-help-center-sdk';
 
 const client = new AiHelpCenterClient({ baseUrl: 'https://your-deployment.com' });
 
@@ -175,6 +175,18 @@ await client.uploadDataset([
 You can override the request paths or provide a custom `fetch` implementation when instantiating the client if you need to route through a proxy or supply authentication headers.
 
 Python developers can follow the [aichat package guide](./docs/aichat-python.md) for installation, configuration, and publishing instructions.
+
+### Publishing the JavaScript SDK
+
+The repository already ships with a build pipeline and metadata that prepares the TypeScript client for npm. To ship a new version:
+
+1. **Authenticate with npm** – run `npm login` (or `npm login --registry <url>` if you use a private registry).
+2. **Update the version** – bump the semantic version in the root `package.json`. The build script copies it into the SDK package manifest.
+3. **Generate the distributable** – run `npm run build:sdk`. This bundles `lib/sdk` into `dist/` with ESM, CJS, and type declarations plus a publish-ready `package.json`.
+4. **Smoke test the tarball (optional)** – `npm pack dist` creates a local `.tgz` so you can inspect the contents before pushing it live.
+5. **Publish** – run `npm run release:sdk` to rebuild (for safety) and invoke `npm publish dist`. Add `--access public` if you re-scope the package name and need to override the default visibility.
+
+After the publish succeeds the library is immediately installable with `npm install ai-help-center-sdk` (or whatever name you configured in `scripts/prepare-sdk-package.mjs`). See [docs/sdk-publishing.md](./docs/sdk-publishing.md) for a detailed checklist covering optional validation steps and tagging guidance.
 
 ## Deployment
 
