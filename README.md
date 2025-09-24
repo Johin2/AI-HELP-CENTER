@@ -4,7 +4,7 @@ The AI Help-Center is a production-ready Node.js service that wraps Google Gemin
 
 ## Features
 
-- 📚 Lightweight keyword retriever that selects relevant knowledge base passages.
+- 📚 Lightweight keyword retriever backed by a Supabase-hosted knowledge base.
 - 🤖 Gemini integration that outputs either Markdown or JSON responses using the provided RAG-centric system prompt.
 - 🔐 Safety-aware defaults with optional safety settings and schema-constrained JSON mode.
 - 🧪 Comprehensive test coverage for request building, retrieval, and the public API route.
@@ -22,15 +22,22 @@ The AI Help-Center is a production-ready Node.js service that wraps Google Gemin
    Copy `.env.example` (or set variables directly):
 
    ```bash
-   echo "GEMINI_API_KEY=your-key" > .env
+   cp .env.example .env
    ```
+
+   Required variables:
+
+   - `SUPABASE_URL` – Your Supabase project URL.
+   - `SUPABASE_SERVICE_ROLE_KEY` (or `SUPABASE_ANON_KEY`) – Key used to read the knowledge base table.
 
    Optional variables:
 
-   - `PORT` – Server port (default: `3000`)
-   - `GEMINI_MODEL` – Gemini model name (default: `gemini-2.0-flash-001`)
-   - `GEMINI_BASE_URL` – Gemini API base URL (default: official REST endpoint)
-   - `KB_PATH` – Path to the knowledge base JSON file (default: `data/knowledgeBase.json`)
+   - `PORT` – Server port (default: `3000`).
+   - `GEMINI_API_KEY` – Required when you want to proxy requests to Gemini.
+   - `GEMINI_MODEL` – Gemini model name (default: `gemini-2.0-flash-001`).
+   - `GEMINI_BASE_URL` – Gemini API base URL (default: official REST endpoint).
+   - `SUPABASE_KB_TABLE` – Supabase table that stores knowledge base entries (default: `knowledge_base`).
+   - `KB_PATH` – Path to a local JSON fallback if Supabase is not configured (default: `data/knowledgeBase.json`).
 
 3. **Run the development server**
 
@@ -83,7 +90,19 @@ When a `GEMINI_API_KEY` is supplied, the endpoint forwards the request to Gemini
 
 ## Knowledge base
 
-Seed content lives in `data/knowledgeBase.json`. Replace or extend this file with your organization’s documents to power retrieval. The simple keyword-based retriever can be replaced with an embedding-based implementation without changing the API surface.
+Knowledge base entries are stored in Supabase. Create a table (default name: `knowledge_base`) with at least the following columns:
+
+| Column       | Type      | Notes                                     |
+| ------------ | --------- | ----------------------------------------- |
+| `id`         | `uuid`    | Primary key, returned as a string.        |
+| `title`      | `text`    | Required. Used in retrieval scoring.      |
+| `text`       | `text`    | Required. Full passage content.           |
+| `url`        | `text`    | Required. Used for citations.             |
+| `created_at` | `timestamptz` | Optional. Helps resolve conflicting docs. |
+
+Additional metadata columns are preserved and passed through to Gemini. Populate the table with your organization’s documents to power retrieval.
+
+If Supabase credentials are not provided, the service falls back to loading documents from `data/knowledgeBase.json`, making local development possible without a database. The simple keyword-based retriever can be replaced with an embedding-based implementation without changing the API surface.
 
 ## Testing
 

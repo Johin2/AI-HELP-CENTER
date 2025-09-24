@@ -12,5 +12,10 @@ export const AppConfig = {
     model: process.env.GEMINI_MODEL ?? DEFAULT_MODEL,
     baseUrl: process.env.GEMINI_BASE_URL ?? DEFAULT_BASE_URL,
   },
+  supabase: {
+    url: process.env.SUPABASE_URL,
+    key: process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_ANON_KEY,
+    table: process.env.SUPABASE_KB_TABLE ?? 'knowledge_base',
+  },
   knowledgeBasePath: process.env.KB_PATH ?? 'data/knowledgeBase.json',
 };

@@ -1,7 +1,11 @@
 import request from 'supertest';
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 
-import app from '../src/index.js';
+import app, { knowledgeReady } from '../src/index.js';
+
+beforeAll(async () => {
+  await knowledgeReady;
+});
 
 describe('POST /api/ask', () => {
   it('returns the request payload when the API key is missing', async () => {
