@@ -103,4 +103,28 @@ describe('SupabaseKnowledgeBase', () => {
     expect(documents).toEqual([]);
     expect(consoleError).toHaveBeenCalled();
   });
+
+  it('warns when the knowledge base table is missing', async () => {
+    const stub = createClientStub();
+    const consoleWarn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    stub.select.mockResolvedValue({
+      data: null,
+      error: { code: 'PGRST205', message: 'table not found' },
+    });
+
+    const knowledgeBase = new SupabaseKnowledgeBase({
+      url: 'https://example.supabase.co',
+      key: 'test-key',
+      table: 'knowledge_base',
+      client: stub.client,
+    });
+
+    const documents = await knowledgeBase.fetchDocuments();
+
+    expect(documents).toEqual([]);
+    expect(consoleWarn).toHaveBeenCalledWith(
+      'Supabase knowledge base table "knowledge_base" not found. Create the table or remove the Supabase credentials to fall back to the local JSON store.',
+    );
+  });
 });
