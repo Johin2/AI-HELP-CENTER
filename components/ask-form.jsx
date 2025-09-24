@@ -70,13 +70,13 @@ export function AskForm() {
         body: JSON.stringify(payload),
       });
 
-      const payload = await response.json();
+      const responseBody = await response.json();
 
       if (!response.ok) {
-        throw new Error(payload.error ?? 'Unexpected error while contacting the assistant.');
+        throw new Error(responseBody.error ?? 'Unexpected error while contacting the assistant.');
       }
 
-      setResult(JSON.stringify(payload, null, 2));
+      setResult(JSON.stringify(responseBody, null, 2));
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Something went wrong. Please try again.';
       setError(message);
