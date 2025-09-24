@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { AiHelpCenterClient } from '@/lib/sdk/client';
+import { AiHelpCenterClient } from '@/lib/sdk/client.js';
 
 describe('AiHelpCenterClient', () => {
   it('submits ask requests to the configured endpoint', async () => {

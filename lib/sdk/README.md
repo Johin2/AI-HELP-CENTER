@@ -1,6 +1,6 @@
 # AI Help Center SDK
 
-The **AI Help Center SDK** is a lightweight TypeScript client for the AI Help Center API. It mirrors the behaviour of the Python `aichat` package so that JavaScript and TypeScript applications can submit questions and synchronise knowledge base documents without hand rolling HTTP calls.
+The **AI Help Center SDK** is a lightweight JavaScript client for the AI Help Center API. It mirrors the behaviour of the Python `aichat` package so that applications can submit questions and synchronise knowledge base documents without hand rolling HTTP calls.
 
 ## Installation
 
@@ -14,7 +14,7 @@ yarn add ai-help-center-sdk
 
 ## Quick start
 
-```ts
+```js
 import { AiHelpCenterClient } from 'ai-help-center-sdk';
 
 const client = new AiHelpCenterClient({
@@ -28,7 +28,7 @@ const response = await client.ask('How do I reset my password?', {
 
 Upload datasets to keep your retriever in sync:
 
-```ts
+```js
 await client.uploadDataset(
   [
     {
@@ -59,7 +59,7 @@ Follow these steps whenever you want to release a new version of the SDK:
 
 1. **Log in to npm** – `npm login` authenticates your machine (use `--registry` for private registries).
 2. **Set the version** – update the version number in the root `package.json`. The helper script mirrors it into the SDK manifest.
-3. **Build the bundle** – run `npm run build:sdk` to emit ESM, CJS, and `.d.ts` files under `dist/` along with a generated `package.json` and README.
+3. **Build the bundle** – run `npm run build:sdk` to emit ESM and CJS bundles under `dist/` along with a generated `package.json` and README.
 4. **Verify the output (optional)** – inspect the folder or run `npm pack dist` to preview the tarball that npm will receive.
 5. **Publish** – `npm publish dist` pushes the package to the registry. Add `--access public` when publishing a scoped package for the first time.
 

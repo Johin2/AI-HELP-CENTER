@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
-import { GeminiClient } from '@/lib/gemini/client';
-import { handleAskRequest } from '@/lib/server/ask';
-import { SimpleRetriever } from '@/lib/retrieval/retriever';
+import { GeminiClient } from '@/lib/gemini/client.js';
+import { handleAskRequest } from '@/lib/server/ask.js';
+import { SimpleRetriever } from '@/lib/retrieval/retriever.js';
 import { ZodError } from 'zod';
 
 describe('handleAskRequest', () => {

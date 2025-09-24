@@ -1,9 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
-import { SimpleRetriever } from '@/lib/retrieval/retriever';
-import type { RetrievedDoc } from '@/lib/types';
+import { SimpleRetriever } from '@/lib/retrieval/retriever.js';
 
-const docs: RetrievedDoc[] = [
+const docs = [
   {
     id: 'kb-1',
     title: 'Install the SDK',

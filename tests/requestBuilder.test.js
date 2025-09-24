@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { buildGeminiRequest, JSON_MODE_SCHEMA } from '@/lib/gemini/requestBuilder';
+import { buildGeminiRequest, JSON_MODE_SCHEMA } from '@/lib/gemini/requestBuilder.js';
 
 const sampleDoc = {
   id: '1',

@@ -343,8 +343,8 @@ return the Gemini request payload, letting you iterate on prompts directly in no
 ## Reference
 
 - Source code: [`src/aichat/client.py`](../src/aichat/client.py)
-- TypeScript counterpart: [`lib/sdk/client.ts`](../lib/sdk/client.ts)
-- API contracts: [`lib/types.ts`](../lib/types.ts)
+- JavaScript counterpart: [`lib/sdk/client.js`](../lib/sdk/client.js)
+- API contracts: [`lib/types.js`](../lib/types.js)
 
 The Python client intentionally mirrors these files.  When new fields are added to the API
 update both implementations to keep the documentation accurate.

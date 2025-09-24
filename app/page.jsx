@@ -2,9 +2,8 @@ import Link from 'next/link';
 
 import { AskForm } from '@/components/ask-form';
 import knowledgeBase from '@/data/knowledgeBase.json';
-import type { RetrievedDoc } from '@/lib/types';
 
-const documents = knowledgeBase as RetrievedDoc[];
+const documents = Array.isArray(knowledgeBase) ? knowledgeBase : [];
 
 export default function HomePage() {
   return (
@@ -39,7 +38,7 @@ export default function HomePage() {
               </p>
               <ul className="mt-6 space-y-4 text-sm text-slate-300">
                 {documents.slice(0, 5).map((doc) => (
-                  <li key={doc.id} className="rounded-xl border border-slate-800/80 bg-slate-950/40 p-4">
+                  <li key={doc.id ?? doc.title} className="rounded-xl border border-slate-800/80 bg-slate-950/40 p-4">
                     <p className="text-xs uppercase tracking-wide text-slate-500">{doc.created_at ?? 'N/A'}</p>
                     <p className="mt-1 font-semibold text-slate-100">{doc.title}</p>
                     <p className="mt-2 text-slate-400">{doc.text}</p>

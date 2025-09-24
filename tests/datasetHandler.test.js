@@ -5,10 +5,9 @@ import { tmpdir } from 'node:os';
 import { describe, expect, it, vi } from 'vitest';
 import { ZodError } from 'zod';
 
-import { SimpleRetriever } from '@/lib/retrieval/retriever';
-import { DatasetStore } from '@/lib/server/datasetStore';
-import { handleDatasetUpload } from '@/lib/server/datasets';
-import type { SupabaseKnowledgeBase } from '@/lib/retrieval/knowledgeBase';
+import { SimpleRetriever } from '@/lib/retrieval/retriever.js';
+import { DatasetStore } from '@/lib/server/datasetStore.js';
+import { handleDatasetUpload } from '@/lib/server/datasets.js';
 
 const createDatasetStore = () => {
   const dir = mkdtempSync(join(tmpdir(), 'ai-help-center-dataset-'));
@@ -72,7 +71,7 @@ describe('handleDatasetUpload', () => {
             url: 'https://example.com/policies',
           },
         ]),
-    } as unknown as SupabaseKnowledgeBase;
+    };
 
     try {
       const result = await handleDatasetUpload(

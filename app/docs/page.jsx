@@ -1,12 +1,10 @@
-import type { Metadata } from 'next';
 import Link from 'next/link';
 
 import { DocsSection } from '@/components/docs-section';
 
-export const metadata: Metadata = {
+export const metadata = {
   title: 'Documentation | AI Help Center',
-  description:
-    'Read the complete AI Help Center SDK guide, including setup steps, environment variables, and integration examples.',
+  description: 'Read the complete AI Help Center SDK guide, including setup steps, environment variables, and integration examples.',
 };
 
 export default function DocsPage() {

@@ -18,13 +18,11 @@ const rootPackage = JSON.parse(readFileSync(rootPackagePath, 'utf8'));
 const packageJson = {
   name: 'ai-help-center-sdk',
   version: rootPackage.version ?? '1.0.0',
-  description: 'TypeScript client for the AI Help Center API',
+  description: 'JavaScript client for the AI Help Center API',
   main: './index.cjs',
   module: './index.mjs',
-  types: './index.d.ts',
   exports: {
     '.': {
-      types: './index.d.ts',
       import: './index.mjs',
       require: './index.cjs',
       default: './index.mjs'
