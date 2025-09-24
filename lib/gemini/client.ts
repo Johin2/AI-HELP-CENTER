@@ -15,8 +15,14 @@ export class GeminiClient {
   private readonly defaultModel: string;
 
   constructor(private readonly config: GeminiClientConfig = {}) {
-    this.fetchFn = config.fetchFn ?? fetch;
-    this.baseUrl = (config.baseUrl ?? DEFAULT_BASE_URL).replace(/\/$/, '');
+    const fetchImpl = config.fetchFn ?? fetch;
+
+    if (!fetchImpl) {
+      throw new Error('Fetch API is not available in this environment. Provide a fetch implementation.');
+    }
+
+    this.fetchFn = fetchImpl;
+    this.baseUrl = (config.baseUrl ?? DEFAULT_BASE_URL).replace(/\/+$/, '');
     this.defaultModel = config.model ?? DEFAULT_MODEL;
   }
 
@@ -46,19 +52,31 @@ export class GeminiClient {
     const { model, ...body } = request;
     const url = `${this.baseUrl}/models/${encodeURIComponent(model)}:generateContent?key=${this.config.apiKey}`;
 
-    const response = await this.fetchFn(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
-    });
+    let response: Response;
+
+    try {
+      response = await this.fetchFn(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+      });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      throw new Error(`Gemini API request failed: ${message}`);
+    }
 
     if (!response.ok) {
       const errorText = await response.text();
       throw new Error(`Gemini API error (${response.status}): ${errorText}`);
     }
 
-    return (await response.json()) as GeminiGenerationResult;
+    try {
+      return (await response.json()) as GeminiGenerationResult;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      throw new Error(`Gemini API error: Failed to parse JSON response: ${message}`);
+    }
   }
 }
