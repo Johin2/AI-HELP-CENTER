@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aichat"
+version = "0.1.0"
+description = "Python client for the AI Help Center service"
+readme = {file = "docs/aichat-python.md", content-type = "text/markdown"}
+requires-python = ">=3.9"
+authors = [
+    {name = "AI Help Center Team"}
+]
+keywords = ["ai", "chatbot", "help-center", "gemini", "rag"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Software Development :: Libraries",
+]
+dependencies = [
+    "requests>=2.31.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/example/aichat"
+Documentation = "https://github.com/example/aichat/tree/main/docs"
+Source = "https://github.com/example/aichat"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"aichat" = ["py.typed"]

@@ -147,9 +147,12 @@ Upload or replace knowledge base documents so the retriever stays up to date.
 }
 ```
 
-## SDK
+## SDKs
 
-The project ships with a lightweight TypeScript SDK so you can integrate the Help Center from any front-end or server without manually crafting HTTP requests.
+The project ships with:
+
+- A lightweight TypeScript SDK so you can integrate the Help Center from any front-end or server without manually crafting HTTP requests.
+- A Python package named [`aichat`](./docs/aichat-python.md) that mirrors the TypeScript surface area for backend jobs, data pipelines, and notebook experiments.
 
 ```ts
 import { AiHelpCenterClient } from '@/lib/sdk';
@@ -170,6 +173,8 @@ await client.uploadDataset([
 ```
 
 You can override the request paths or provide a custom `fetch` implementation when instantiating the client if you need to route through a proxy or supply authentication headers.
+
+Python developers can follow the [aichat package guide](./docs/aichat-python.md) for installation, configuration, and publishing instructions.
 
 ## Deployment
 
