@@ -6,7 +6,8 @@ import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const rootDir = resolve(__dirname, '..');
-const distDir = resolve(rootDir, 'dist');
+const sdkDir = resolve(rootDir, 'lib', 'sdk');
+const distDir = resolve(sdkDir, 'dist');
 
 if (!existsSync(distDir)) {
   mkdirSync(distDir, { recursive: true });
@@ -14,40 +15,35 @@ if (!existsSync(distDir)) {
 
 const rootPackagePath = resolve(rootDir, 'package.json');
 const rootPackage = JSON.parse(readFileSync(rootPackagePath, 'utf8'));
+const sdkPackagePath = resolve(sdkDir, 'package.json');
+const sdkPackage = JSON.parse(readFileSync(sdkPackagePath, 'utf8'));
 
-const packageJson = {
-  name: 'ai-help-center-sdk',
-  version: rootPackage.version ?? '1.0.0',
-  description: 'JavaScript client for the AI Help Center API',
-  main: './index.cjs',
-  module: './index.mjs',
-  exports: {
-    '.': {
-      import: './index.mjs',
-      require: './index.cjs',
-      default: './index.mjs'
-    },
-    './package.json': './package.json'
-  },
-  sideEffects: false,
-  keywords: ['ai', 'help-center', 'sdk', 'gemini', 'rag'],
-  author: 'AI Help Center Team',
-  license: 'MIT',
-  repository: {
-    type: 'git',
-    url: 'https://github.com/example/AI-HELP-CENTER'
-  },
-  homepage: 'https://github.com/example/AI-HELP-CENTER#readme'
-};
+const targetVersion = rootPackage.version ?? '1.0.0';
+let hasChanges = false;
 
-writeFileSync(resolve(distDir, 'package.json'), `${JSON.stringify(packageJson, null, 2)}\n`);
+if (sdkPackage.version !== targetVersion) {
+  sdkPackage.version = targetVersion;
+  hasChanges = true;
+}
 
-const sdkReadmePath = resolve(rootDir, 'lib', 'sdk', 'README.md');
-if (existsSync(sdkReadmePath)) {
-  copyFileSync(sdkReadmePath, resolve(distDir, 'README.md'));
+const requiredFiles = ['dist', 'README.md'];
+if (!Array.isArray(sdkPackage.files)) {
+  sdkPackage.files = requiredFiles;
+  hasChanges = true;
+} else {
+  for (const file of requiredFiles) {
+    if (!sdkPackage.files.includes(file)) {
+      sdkPackage.files.push(file);
+      hasChanges = true;
+    }
+  }
+}
+
+if (hasChanges) {
+  writeFileSync(sdkPackagePath, `${JSON.stringify(sdkPackage, null, 2)}\n`);
 }
 
 const licensePath = resolve(rootDir, 'LICENSE');
 if (existsSync(licensePath)) {
-  copyFileSync(licensePath, resolve(distDir, 'LICENSE'));
+  copyFileSync(licensePath, resolve(sdkDir, 'LICENSE'));
 }

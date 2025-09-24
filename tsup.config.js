@@ -6,7 +6,7 @@ export default defineConfig(() => ({
   sourcemap: true,
   clean: true,
   target: 'es2019',
-  outDir: 'dist',
+  outDir: 'lib/sdk/dist',
   outExtension({ format }) {
     return {
       js: format === 'cjs' ? '.cjs' : '.mjs',

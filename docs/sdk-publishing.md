@@ -30,7 +30,7 @@ npm login --registry https://registry.npmjs.org
 
 ## 3. Bump the version
 
-Update the version number in the root `package.json`. The release helper copies this version into the generated `dist/package.json`, so you only need to touch a single file.
+Update the version number in the root `package.json`. The release helper mirrors this version into `lib/sdk/package.json`, so you only need to touch a single file.
 
 ```bash
 npm version patch
@@ -47,12 +47,15 @@ Generate the publishable artefacts (ESM and CommonJS bundles) plus the package m
 npm run build:sdk
 ```
 
-The output lives in `dist/`:
+The bundles are emitted to `lib/sdk/dist/`:
 
 ```
-dist/
-  index.cjs
-  index.mjs
+lib/sdk/
+  dist/
+    index.cjs
+    index.mjs
+    index.cjs.map
+    index.mjs.map
   package.json
   README.md
   LICENSE        # copied if present at the repository root
@@ -63,7 +66,7 @@ dist/
 Inspect the folder contents or create a tarball with `npm pack` to confirm consumers will receive the expected files.
 
 ```bash
-npm pack dist
+npm pack lib/sdk
 ls *.tgz
 ```
 
@@ -74,13 +77,13 @@ You can even `npm install ./ai-help-center-sdk-<version>.tgz` in another project
 Publish the prepared folder to npm.
 
 ```bash
-npm publish dist
+npm publish lib/sdk
 ```
 
 If you rename the package to a scoped name (for example `@acme/ai-help-center-sdk`), append `--access public` the first time you publish it:
 
 ```bash
-npm publish dist --access public
+npm publish lib/sdk --access public
 ```
 
 For private registries replace the registry URL with your internal endpoint via `--registry`.

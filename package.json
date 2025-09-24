@@ -9,7 +9,7 @@
     "start": "next start",
     "test": "vitest run",
     "build:sdk": "tsup --config tsup.config.js && node scripts/prepare-sdk-package.mjs",
-    "release:sdk": "npm run build:sdk && npm publish dist"
+    "release:sdk": "npm run build:sdk && npm publish lib/sdk"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.46.1",
