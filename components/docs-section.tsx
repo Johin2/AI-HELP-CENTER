@@ -1,5 +1,10 @@
 import React from 'react';
 
+type DocsSectionProps = {
+  id?: string;
+  className?: string;
+};
+
 const quickStartSteps = [
   {
     title: 'Install the SDK',
@@ -171,11 +176,15 @@ export async function syncKnowledgeBase() {
 }
 `;
 
-export function DocsSection() {
+export function DocsSection({ id = 'docs', className }: DocsSectionProps = {}) {
+  const baseClassName =
+    'rounded-3xl border border-slate-800 bg-slate-950/60 p-8 shadow-2xl shadow-black/40 backdrop-blur';
+  const sectionClassName = className ? `${baseClassName} ${className}` : baseClassName;
+
   return (
     <section
-      id="docs"
-      className="rounded-3xl border border-slate-800 bg-slate-950/60 p-8 shadow-2xl shadow-black/40 backdrop-blur"
+      id={id}
+      className={sectionClassName}
     >
       <header className="space-y-4">
         <span className="inline-flex rounded-full border border-brand/50 bg-brand/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-brand">
