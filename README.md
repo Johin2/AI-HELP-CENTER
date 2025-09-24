@@ -33,6 +33,17 @@ A production-ready AI Help Center rebuilt with **Next.js 14**, **Tailwind CSS**,
 
    - When `GEMINI_API_KEY` is omitted, the API returns the Gemini request payload so you can inspect prompts safely in development.
    - When Supabase credentials are missing, the retriever falls back to the bundled JSON knowledge base.
+   - If you enable Supabase, ensure the knowledge base table exists. Run this SQL in the SQL editor (adjust the schema/name as needed):
+
+     ```sql
+     create table if not exists public.knowledge_base (
+       id uuid primary key,
+       title text not null,
+       text text not null,
+       url text not null,
+       created_at timestamptz default now()
+     );
+     ```
 
 3. **Run the development server**
 
