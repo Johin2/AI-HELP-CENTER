@@ -4,8 +4,8 @@
   "description": "Production-grade AI Help Center application using Gemini with RAG and citations.",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "start": "node dist/index.js",
+    "dev": "tsx watch src/server.ts",
+    "start": "node dist/server.js",
     "build": "tsc -p tsconfig.json",
     "test": "vitest run"
   },
