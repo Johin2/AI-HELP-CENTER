@@ -109,6 +109,68 @@ Generate an answer for a user question.
 }
 ```
 
+### `POST /api/datasets`
+
+Upload or replace knowledge base documents so the retriever stays up to date.
+
+- Accepts a list of document objects that mirror the `RetrievedDoc` shape.
+- Supports an optional `mode` flag:
+  - `append` (default) upserts documents into the current store.
+  - `replace` clears the existing store before inserting the new dataset.
+- When Supabase credentials are configured the documents are synced to the Supabase table. Otherwise they are persisted to `data/knowledgeBase.json`.
+
+**Example request**
+
+```json
+{
+  "mode": "append",
+  "documents": [
+    {
+      "title": "Billing policies",
+      "text": "Invoices are generated on the 1st of every month.",
+      "url": "https://example.com/docs/billing",
+      "created_at": "2024-05-01T12:00:00Z"
+    }
+  ]
+}
+```
+
+**Example response**
+
+```json
+{
+  "message": "Dataset updated successfully.",
+  "mode": "append",
+  "uploaded": 1,
+  "total": 6,
+  "source": "file"
+}
+```
+
+## SDK
+
+The project ships with a lightweight TypeScript SDK so you can integrate the Help Center from any front-end or server without manually crafting HTTP requests.
+
+```ts
+import { AiHelpCenterClient } from '@/lib/sdk';
+
+const client = new AiHelpCenterClient({ baseUrl: 'https://your-deployment.com' });
+
+// Ask the chatbot
+const answer = await client.ask('How do I reset my password?', { mode: 'markdown' });
+
+// Sync new knowledge base entries
+await client.uploadDataset([
+  {
+    title: 'Release notes',
+    text: 'Highlights for the latest product release.',
+    url: 'https://example.com/release-notes'
+  }
+]);
+```
+
+You can override the request paths or provide a custom `fetch` implementation when instantiating the client if you need to route through a proxy or supply authentication headers.
+
 ## Deployment
 
 The repository includes a minimal [`vercel.json`](./vercel.json). Deploy with Vercel or any Next.js-compatible platform:
