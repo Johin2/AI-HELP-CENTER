@@ -55,13 +55,16 @@ The client throws standard `Error` objects when requests fail. When the HTTP res
 
 ## Publishing
 
-Run the provided build step to generate the distributable artefacts under `dist/`:
+Follow these steps whenever you want to release a new version of the SDK:
 
-```bash
-npm run build:sdk
-```
+1. **Log in to npm** – `npm login` authenticates your machine (use `--registry` for private registries).
+2. **Set the version** – update the version number in the root `package.json`. The helper script mirrors it into the SDK manifest.
+3. **Build the bundle** – run `npm run build:sdk` to emit ESM, CJS, and `.d.ts` files under `dist/` along with a generated `package.json` and README.
+4. **Verify the output (optional)** – inspect the folder or run `npm pack dist` to preview the tarball that npm will receive.
+5. **Publish** – `npm publish dist` pushes the package to the registry. Add `--access public` when publishing a scoped package for the first time.
 
-The resulting `dist` directory is publishable directly to npm (`npm publish dist`).
+Once published, consumers can install the package globally via `npm install ai-help-center-sdk`, `pnpm add ai-help-center-sdk`, or `yarn add ai-help-center-sdk`. Refer to [`docs/sdk-publishing.md`](../../docs/sdk-publishing.md) for an expanded walkthrough with optional validation steps.
+
 
 ## License
 

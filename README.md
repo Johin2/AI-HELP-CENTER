@@ -176,6 +176,18 @@ You can override the request paths or provide a custom `fetch` implementation wh
 
 Python developers can follow the [aichat package guide](./docs/aichat-python.md) for installation, configuration, and publishing instructions.
 
+### Publishing the JavaScript SDK
+
+The repository already ships with a build pipeline and metadata that prepares the TypeScript client for npm. To ship a new version:
+
+1. **Authenticate with npm** – run `npm login` (or `npm login --registry <url>` if you use a private registry).
+2. **Update the version** – bump the semantic version in the root `package.json`. The build script copies it into the SDK package manifest.
+3. **Generate the distributable** – run `npm run build:sdk`. This bundles `lib/sdk` into `dist/` with ESM, CJS, and type declarations plus a publish-ready `package.json`.
+4. **Smoke test the tarball (optional)** – `npm pack dist` creates a local `.tgz` so you can inspect the contents before pushing it live.
+5. **Publish** – run `npm run release:sdk` to rebuild (for safety) and invoke `npm publish dist`. Add `--access public` if you re-scope the package name and need to override the default visibility.
+
+After the publish succeeds the library is immediately installable with `npm install ai-help-center-sdk` (or whatever name you configured in `scripts/prepare-sdk-package.mjs`). See [docs/sdk-publishing.md](./docs/sdk-publishing.md) for a detailed checklist covering optional validation steps and tagging guidance.
+
 ## Deployment
 
 The repository includes a minimal [`vercel.json`](./vercel.json). Deploy with Vercel or any Next.js-compatible platform:
