@@ -72,6 +72,46 @@ export class SupabaseKnowledgeBase {
     }
   }
 
+  public async upsertDocuments(documents: RetrievedDoc[]): Promise<void> {
+    if (documents.length === 0) {
+      return;
+    }
+
+    const rows = documents.map((doc) => {
+      const { id, title, text, url, created_at, ...rest } = doc;
+      if (!id) {
+        throw new Error('Document id is required when syncing with Supabase.');
+      }
+
+      return {
+        id,
+        title,
+        text,
+        url,
+        created_at: created_at ?? new Date().toISOString(),
+        ...rest,
+      };
+    });
+
+    const { error } = await this.client
+      .from(this.table)
+      .upsert(rows, { onConflict: 'id' });
+
+    if (error) {
+      throw new Error(`Failed to upsert knowledge base documents: ${error.message}`);
+    }
+  }
+
+  public async replaceDocuments(documents: RetrievedDoc[]): Promise<void> {
+    const { error: deleteError } = await this.client.from(this.table).delete().neq('id', null);
+
+    if (deleteError) {
+      throw new Error(`Failed to clear Supabase knowledge base: ${deleteError.message}`);
+    }
+
+    await this.upsertDocuments(documents);
+  }
+
   private toRetrievedDoc(row: SupabaseRow): RetrievedDoc | null {
     const { id, title, text, url, created_at, ...rest } = row;
 
