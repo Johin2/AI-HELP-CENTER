@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
+import { AuthButtons } from '@/components/auth-buttons';
+
 const navigationLinks = [
   { href: '/', label: 'Home' },
   { href: '/docs', label: 'Docs' },
@@ -38,6 +40,8 @@ export function Navbar() {
             );
           })}
         </nav>
+
+        <AuthButtons />
       </div>
     </header>
   );

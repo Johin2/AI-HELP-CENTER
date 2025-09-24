@@ -29,6 +29,11 @@ A production-ready AI Help Center rebuilt with **Next.js 14**, **Tailwind CSS**,
    SUPABASE_SERVICE_ROLE_KEY=service-role-or-anon-key
    SUPABASE_KB_TABLE=knowledge_base
    KB_PATH=data/knowledgeBase.json
+   NEXTAUTH_SECRET=complex-random-string
+   GOOGLE_CLIENT_ID=your-google-oauth-client-id
+   GOOGLE_CLIENT_SECRET=your-google-oauth-client-secret
+   GITHUB_CLIENT_ID=your-github-oauth-client-id
+   GITHUB_CLIENT_SECRET=your-github-oauth-client-secret
    ```
 
    - When `GEMINI_API_KEY` is omitted, the API returns the Gemini request payload so you can inspect prompts safely in development.
