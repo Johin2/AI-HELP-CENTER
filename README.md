@@ -151,11 +151,11 @@ Upload or replace knowledge base documents so the retriever stays up to date.
 
 The project ships with:
 
-- A lightweight TypeScript SDK so you can integrate the Help Center from any front-end or server without manually crafting HTTP requests.
+- A lightweight TypeScript SDK so you can integrate the Help Center from any front-end or server without manually crafting HTTP requests. Install it globally with `npm install ai-help-center-sdk` or generate a local build using `npm run build:sdk`.
 - A Python package named [`aichat`](./docs/aichat-python.md) that mirrors the TypeScript surface area for backend jobs, data pipelines, and notebook experiments.
 
 ```ts
-import { AiHelpCenterClient } from '@/lib/sdk';
+import { AiHelpCenterClient } from 'ai-help-center-sdk';
 
 const client = new AiHelpCenterClient({ baseUrl: 'https://your-deployment.com' });
 
