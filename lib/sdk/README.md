@@ -65,6 +65,7 @@ Follow these steps whenever you want to release a new version of the SDK:
 
 Once published, consumers can install the package globally via `npm install ai-help-center-sdk`, `pnpm add ai-help-center-sdk`, or `yarn add ai-help-center-sdk`. Refer to [`docs/sdk-publishing.md`](../../docs/sdk-publishing.md) for an expanded walkthrough with optional validation steps.
 
+
 ## License
 
 MIT © AI Help Center Team
