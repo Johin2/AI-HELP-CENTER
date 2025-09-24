@@ -2,13 +2,7 @@
 
 import { useState } from 'react';
 
-type ResponseMode = 'markdown' | 'json';
-
-type AskResponse = {
-  message?: string;
-  request?: unknown;
-  response?: unknown;
-};
+const RESPONSE_MODES = ['markdown', 'json'];
 
 const initialResponse = JSON.stringify(
   {
@@ -22,21 +16,21 @@ export function AskForm() {
   const [question, setQuestion] = useState('How do I configure the Help Center?');
   const [workspaceName, setWorkspaceName] = useState('Acme Support Hub');
   const [workspaceTone, setWorkspaceTone] = useState('friendly');
-  const [mode, setMode] = useState<ResponseMode>('markdown');
+  const [mode, setMode] = useState('markdown');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null);
   const [result, setResult] = useState(initialResponse);
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     setIsSubmitting(true);
     setError(null);
     setResult(initialResponse);
 
     const workspaceEntries = [
-      workspaceName.trim() ? (['name', workspaceName.trim()] as const) : null,
-      workspaceTone.trim() ? (['tone', workspaceTone.trim()] as const) : null,
-    ].filter(Boolean) as Array<readonly [string, string]>;
+      workspaceName.trim() ? ['name', workspaceName.trim()] : null,
+      workspaceTone.trim() ? ['tone', workspaceTone.trim()] : null,
+    ].filter(Boolean);
 
     const workspace = Object.fromEntries(workspaceEntries);
 
@@ -53,7 +47,7 @@ export function AskForm() {
         }),
       });
 
-      const payload = (await response.json()) as AskResponse & { error?: string };
+      const payload = await response.json();
 
       if (!response.ok) {
         throw new Error(payload.error ?? 'Unexpected error while contacting the assistant.');
@@ -116,7 +110,7 @@ export function AskForm() {
       <div className="space-y-2">
         <span className="text-sm font-medium text-slate-300">Response format</span>
         <div className="flex gap-3">
-          {(['markdown', 'json'] satisfies ResponseMode[]).map((value) => (
+          {RESPONSE_MODES.map((value) => (
             <label
               key={value}
               className={`flex cursor-pointer items-center gap-2 rounded-xl border px-4 py-2 text-sm transition ${

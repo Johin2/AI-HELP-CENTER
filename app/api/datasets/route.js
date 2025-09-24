@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
 import { ZodError } from 'zod';
 
-import { handleDatasetUpload } from '@/lib/server/datasets';
-import { datasetStore, knowledgeReady, retriever, supabaseKnowledgeBase } from '@/lib/server/runtime';
+import { handleDatasetUpload } from '@/lib/server/datasets.js';
+import { datasetStore, knowledgeReady, retriever, supabaseKnowledgeBase } from '@/lib/server/runtime.js';
 
 export const dynamic = 'force-dynamic';
 
-export async function POST(request: Request) {
+export async function POST(request) {
   try {
     const payload = await request.json();
     await knowledgeReady;

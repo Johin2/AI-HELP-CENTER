@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
 import { ZodError } from 'zod';
 
-import { handleAskRequest } from '@/lib/server/ask';
-import { geminiClient, knowledgeReady, retriever } from '@/lib/server/runtime';
+import { handleAskRequest } from '@/lib/server/ask.js';
+import { geminiClient, knowledgeReady, retriever } from '@/lib/server/runtime.js';
 
 export const dynamic = 'force-dynamic';
 
-export async function POST(request: Request) {
+export async function POST(request) {
   try {
     const payload = await request.json();
     await knowledgeReady;

@@ -1,6 +1,6 @@
 # Publishing the JavaScript SDK
 
-The repository includes everything necessary to publish the TypeScript client that lives under `lib/sdk` as an npm package. This guide walks through the release process end-to-end and highlights optional checks you can run before pushing to a registry.
+The repository includes everything necessary to publish the JavaScript client that lives under `lib/sdk` as an npm package. This guide walks through the release process end-to-end and highlights optional checks you can run before pushing to a registry.
 
 ## Prerequisites
 
@@ -16,7 +16,7 @@ Make sure you have the tooling required for the build step:
 npm install
 ```
 
-This installs `tsup`, TypeScript, and other dev dependencies used by the bundler. If you previously installed dependencies with `--omit=dev`, rerun the command without that flag so the build tools are available.
+This installs `tsup` and other dev dependencies used by the bundler. If you previously installed dependencies with `--omit=dev`, rerun the command without that flag so the build tools are available.
 
 ## 2. Authenticate with npm
 
@@ -41,7 +41,7 @@ Commit the version bump if you follow git-based release tagging.
 
 ## 4. Build the distributable
 
-Generate the publishable artefacts (ESM, CommonJS, and type declarations) plus the package metadata and docs.
+Generate the publishable artefacts (ESM and CommonJS bundles) plus the package metadata and docs.
 
 ```bash
 npm run build:sdk
@@ -52,7 +52,6 @@ The output lives in `dist/`:
 ```
 dist/
   index.cjs
-  index.d.ts
   index.mjs
   package.json
   README.md
