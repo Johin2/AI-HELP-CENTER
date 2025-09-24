@@ -1,4 +1,4 @@
-import type { AskRequestPayload, RetrievedDoc } from '@/lib/types';
+import type { AskRequestPayload, RetrievedDoc } from '../types';
 
 export interface AiHelpCenterClientConfig {
   baseUrl: string;
