@@ -25,6 +25,7 @@ describe('buildGeminiRequest', () => {
     const context = JSON.parse(request.contents[2].parts[0].text);
     expect(context.mode).toBe('markdown');
     expect(context.retrieved_docs).toHaveLength(1);
+    expect(context.scope).toBe('docs');
   });
 
   it('attaches JSON schema when mode is json', () => {
@@ -33,6 +34,8 @@ describe('buildGeminiRequest', () => {
       retrieved_docs: [sampleDoc],
       mode: 'json',
       model: 'custom-model',
+      scope: 'repo',
+      repo_context: { installation_id: 1, repository_ids: [42] },
     });
 
     expect(request.model).toBe('custom-model');
@@ -41,6 +44,8 @@ describe('buildGeminiRequest', () => {
 
     const context = JSON.parse(request.contents[2].parts[0].text);
     expect(context.mode).toBe('json');
+    expect(context.scope).toBe('repo');
+    expect(context.repo_context).toEqual({ installation_id: 1, repository_ids: [42] });
   });
 
   it('throws when question is empty', () => {
