@@ -1,5 +1,6 @@
+import Link from 'next/link';
+
 import { AskForm } from '@/components/ask-form';
-import { DocsSection } from '@/components/docs-section';
 import knowledgeBase from '@/data/knowledgeBase.json';
 import type { RetrievedDoc } from '@/lib/types';
 
@@ -65,7 +66,25 @@ export default function HomePage() {
         </aside>
       </div>
 
-      <DocsSection />
+      <section className="rounded-3xl border border-slate-800 bg-slate-900/60 p-8 shadow-xl shadow-black/40 backdrop-blur">
+        <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+          <div className="space-y-3">
+            <h2 className="text-2xl font-semibold text-white sm:text-3xl">Explore the full documentation</h2>
+            <p className="text-sm text-slate-300 sm:max-w-xl sm:text-base">
+              Dive deeper into the SDK setup, environment variables, and integration examples on the dedicated documentation
+              page. Everything you need to launch the AI Help Center lives there—no scrolling required.
+            </p>
+          </div>
+
+          <Link
+            href="/docs"
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-brand px-6 py-2 text-sm font-semibold text-brand-foreground shadow-glow transition hover:bg-brand/90"
+          >
+            Read the docs
+            <span aria-hidden className="text-base">↗</span>
+          </Link>
+        </div>
+      </section>
     </main>
   );
 }
