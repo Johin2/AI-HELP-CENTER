@@ -18,6 +18,15 @@ export default function HomePage() {
             Ask questions about your product documentation, generate structured JSON responses for chat widgets, and keep
             citations front-and-center. Everything runs on Next.js, Tailwind CSS, and Google Gemini.
           </p>
+          <div className="flex flex-wrap gap-3">
+            <a
+              href="/dashboard"
+              className="inline-flex items-center gap-2 rounded-full bg-brand px-4 py-2 text-sm font-medium text-brand-foreground shadow-glow transition hover:bg-brand/90"
+            >
+              Manage repo indexing
+              <span aria-hidden>↗</span>
+            </a>
+          </div>
         </header>
 
         <div className="rounded-3xl border border-slate-800 bg-slate-900/60 p-8 shadow-xl shadow-black/40 backdrop-blur">

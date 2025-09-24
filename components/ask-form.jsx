@@ -3,6 +3,11 @@
 import { useState } from 'react';
 
 const RESPONSE_MODES = ['markdown', 'json'];
+const RETRIEVAL_SCOPES = [
+  { value: 'docs', label: 'Docs' },
+  { value: 'repo', label: 'Repo' },
+  { value: 'both', label: 'Both' },
+];
 
 const initialResponse = JSON.stringify(
   {
@@ -17,6 +22,9 @@ export function AskForm() {
   const [workspaceName, setWorkspaceName] = useState('Acme Support Hub');
   const [workspaceTone, setWorkspaceTone] = useState('friendly');
   const [mode, setMode] = useState('markdown');
+  const [scope, setScope] = useState('docs');
+  const [installationId, setInstallationId] = useState('');
+  const [repositoryIds, setRepositoryIds] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [result, setResult] = useState(initialResponse);
@@ -35,25 +43,40 @@ export function AskForm() {
     const workspace = Object.fromEntries(workspaceEntries);
 
     try {
+      const payload = {
+        question,
+        workspace: workspaceEntries.length > 0 ? workspace : undefined,
+        mode,
+        scope,
+      };
+
+      if (scope !== 'docs' && installationId.trim()) {
+        const repoIds = repositoryIds
+          .split(',')
+          .map((value) => Number.parseInt(value.trim(), 10))
+          .filter((value) => Number.isFinite(value));
+
+        payload.repo_context = {
+          installation_id: Number.parseInt(installationId.trim(), 10),
+          repository_ids: repoIds.length > 0 ? repoIds : undefined,
+        };
+      }
+
       const response = await fetch('/api/ask', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          question,
-          workspace: workspaceEntries.length > 0 ? workspace : undefined,
-          mode,
-        }),
+        body: JSON.stringify(payload),
       });
 
-      const payload = await response.json();
+      const responseBody = await response.json();
 
       if (!response.ok) {
-        throw new Error(payload.error ?? 'Unexpected error while contacting the assistant.');
+        throw new Error(responseBody.error ?? 'Unexpected error while contacting the assistant.');
       }
 
-      setResult(JSON.stringify(payload, null, 2));
+      setResult(JSON.stringify(responseBody, null, 2));
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Something went wrong. Please try again.';
       setError(message);
@@ -132,6 +155,65 @@ export function AskForm() {
           ))}
         </div>
       </div>
+
+      <div className="space-y-2">
+        <span className="text-sm font-medium text-slate-300">Retrieval scope</span>
+        <div className="flex flex-wrap gap-3">
+          {RETRIEVAL_SCOPES.map((option) => (
+            <label
+              key={option.value}
+              className={`flex cursor-pointer items-center gap-2 rounded-xl border px-4 py-2 text-sm transition ${
+                scope === option.value
+                  ? 'border-brand bg-brand/10 text-brand'
+                  : 'border-slate-700 bg-slate-900/60 text-slate-300 hover:border-slate-500'
+              }`}
+            >
+              <input
+                type="radio"
+                name="scope"
+                value={option.value}
+                checked={scope === option.value}
+                onChange={() => setScope(option.value)}
+                className="sr-only"
+              />
+              <span>{option.label}</span>
+            </label>
+          ))}
+        </div>
+        <p className="text-xs text-slate-500">
+          Repo scope looks up indexed code chunks and returns file + line citations. Provide the installation ID (and optional
+          repository IDs) when querying repositories.
+        </p>
+      </div>
+
+      {scope !== 'docs' ? (
+        <div className="grid gap-4 lg:grid-cols-2">
+          <div className="space-y-2">
+            <label htmlFor="installationId" className="text-sm font-medium text-slate-300">
+              GitHub installation ID
+            </label>
+            <input
+              id="installationId"
+              value={installationId}
+              onChange={(event) => setInstallationId(event.target.value)}
+              placeholder="123456"
+              inputMode="numeric"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="repositoryIds" className="text-sm font-medium text-slate-300">
+              Repository IDs (optional, comma separated)
+            </label>
+            <input
+              id="repositoryIds"
+              value={repositoryIds}
+              onChange={(event) => setRepositoryIds(event.target.value)}
+              placeholder="98765, 54321"
+            />
+          </div>
+        </div>
+      ) : null}
 
       {error ? <p className="rounded-lg border border-red-500/40 bg-red-500/10 p-3 text-sm text-red-200">{error}</p> : null}
 
