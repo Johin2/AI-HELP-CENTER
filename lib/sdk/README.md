@@ -58,10 +58,10 @@ The client throws standard `Error` objects when requests fail. When the HTTP res
 Follow these steps whenever you want to release a new version of the SDK:
 
 1. **Log in to npm** – `npm login` authenticates your machine (use `--registry` for private registries).
-2. **Set the version** – update the version number in the root `package.json`. The helper script mirrors it into the SDK manifest.
-3. **Build the bundle** – run `npm run build:sdk` to emit ESM and CJS bundles under `dist/` along with a generated `package.json` and README.
-4. **Verify the output (optional)** – inspect the folder or run `npm pack dist` to preview the tarball that npm will receive.
-5. **Publish** – `npm publish dist` pushes the package to the registry. Add `--access public` when publishing a scoped package for the first time.
+2. **Set the version** – update the version number in the root `package.json`. The helper script mirrors it into `lib/sdk/package.json`.
+3. **Build the bundle** – run `npm run build:sdk` to emit ESM and CJS bundles under `lib/sdk/dist/`.
+4. **Verify the output (optional)** – inspect the folder or run `npm pack lib/sdk` to preview the tarball that npm will receive.
+5. **Publish** – `npm publish lib/sdk` pushes the package to the registry. Add `--access public` when publishing a scoped package for the first time.
 
 Once published, consumers can install the package globally via `npm install ai-help-center-sdk`, `pnpm add ai-help-center-sdk`, or `yarn add ai-help-center-sdk`. Refer to [`docs/sdk-publishing.md`](../../docs/sdk-publishing.md) for an expanded walkthrough with optional validation steps.
 

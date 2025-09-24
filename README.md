@@ -181,12 +181,12 @@ Python developers can follow the [aichat package guide](./docs/aichat-python.md)
 The repository already ships with a build pipeline and metadata that prepares the JavaScript client for npm. To ship a new version:
 
 1. **Authenticate with npm** – run `npm login` (or `npm login --registry <url>` if you use a private registry).
-2. **Update the version** – bump the semantic version in the root `package.json`. The build script copies it into the SDK package manifest.
-3. **Generate the distributable** – run `npm run build:sdk`. This bundles `lib/sdk` into `dist/` with ESM and CJS outputs plus a publish-ready `package.json`.
-4. **Smoke test the tarball (optional)** – `npm pack dist` creates a local `.tgz` so you can inspect the contents before pushing it live.
-5. **Publish** – run `npm run release:sdk` to rebuild (for safety) and invoke `npm publish dist`. Add `--access public` if you re-scope the package name and need to override the default visibility.
+2. **Update the version** – bump the semantic version in the root `package.json`. The build script copies it into `lib/sdk/package.json` so the published manifest stays in sync.
+3. **Generate the distributable** – run `npm run build:sdk`. This bundles `lib/sdk` into `lib/sdk/dist/` with ESM and CJS outputs.
+4. **Smoke test the tarball (optional)** – `npm pack lib/sdk` creates a local `.tgz` so you can inspect the contents before pushing it live.
+5. **Publish** – run `npm run release:sdk` to rebuild (for safety) and invoke `npm publish lib/sdk`. Add `--access public` if you re-scope the package name and need to override the default visibility.
 
-After the publish succeeds the library is immediately installable with `npm install ai-help-center-sdk` (or whatever name you configured in `scripts/prepare-sdk-package.mjs`). See [docs/sdk-publishing.md](./docs/sdk-publishing.md) for a detailed checklist covering optional validation steps and tagging guidance.
+After the publish succeeds the library is immediately installable with `npm install ai-help-center-sdk` (or whatever name you configured in `lib/sdk/package.json`). See [docs/sdk-publishing.md](./docs/sdk-publishing.md) for a detailed checklist covering optional validation steps and tagging guidance.
 
 ## Deployment
 
